@@ -1,0 +1,7 @@
+interface:
+  display_name: "Career Project JD Matcher"
+  short_description: "Match real projects to job JDs"
+  default_prompt: "Use $career-project-jd-matcher to match my resume and real project evidence against job descriptions without inventing claims."
+
+policy:
+  allow_implicit_invocation: true
