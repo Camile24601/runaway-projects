@@ -1,6 +1,6 @@
 ---
 name: github-skill-sync
-description: Prepare Codex skill, bug-library, and project changes for safe GitHub synchronization. Use when the user wants to整理 skills, update a GitHub repo, generate commit messages, PR descriptions, issue/PR comments, changelog-style summaries, or review what should be uploaded before approving git add, commit, push, or GitHub comments.
+description: Prepare Codex skill, bug-library, and project changes for safe GitHub synchronization. Use when the user wants to整理 skills, update a GitHub repo, generate commit messages, PR descriptions, issue/PR comments, changelog-style summaries, or review what should be uploaded before approving git add, commit, push, or GitHub comments. Also use proactively after Codex edits project files, SKILL.md files, skill-records, bug-library content, or GitHub-facing docs, so the user can confirm whether to sync the update to GitHub.
 ---
 
 # GitHub Skill Sync
@@ -10,6 +10,18 @@ description: Prepare Codex skill, bug-library, and project changes for safe GitH
 Use this skill to make GitHub synchronization semi-automatic and review-first.
 
 Never upload, commit, push, open PRs, or post GitHub comments until the user explicitly approves the exact action. The default output is a GitHub-ready package: upload scope, risk notes, commit message, PR/comment draft, and next commands to run after approval.
+
+## Proactive Trigger
+
+At the end of a task, use this skill proactively when Codex created, edited, or exported any of these:
+
+- `SKILL.md` files.
+- `skill-records/`.
+- Bug-library records or bug-library skill instructions.
+- Project source, README, configuration examples, or GitHub-facing docs.
+- Git ignore rules or files that affect upload safety.
+
+When this trigger fires, do not upload automatically. Briefly tell the user that GitHub sync may be appropriate, show the recommended scope or run the summary script, and ask for confirmation before any Git or GitHub write.
 
 ## Scope
 

@@ -170,6 +170,23 @@ Meta Skill
 
 Do not skip levels. A single case usually becomes a bug-library entry first. Multiple similar cases can become a rule. Multiple rules with a workflow can become a skill. Multiple skill-design lessons can update this meta skill.
 
+
+## Proactive Learning Reminder
+
+The agent should proactively surface likely learning opportunities even when the user does not explicitly invoke this skill. This is especially important after bug fixes, failed tests, wrong outputs, repeated workflow steps, repeated user corrections, prompt repairs, or successful patterns that look reusable.
+
+When a likely opportunity is detected, do not update files immediately. Briefly tell the user what might be worth learning and ask whether to generate a structured learning proposal.
+
+Recommended reminder format:
+
+```text
+I noticed a reusable learning opportunity: <brief evidence>.
+Possible outcome: <bug-library entry, skill update, new skill, reference, or no record>.
+Would you like me to generate a structured learning proposal before changing any files?
+```
+
+Only persist the result after explicit user confirmation.
+
 ## Workflow
 
 1. Collect evidence:

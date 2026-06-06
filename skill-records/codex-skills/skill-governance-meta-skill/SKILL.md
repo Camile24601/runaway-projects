@@ -18,6 +18,23 @@ When the user proposes a skill structure, implementation direction, storage layo
 
 If a better option exists, propose it with tradeoffs. Do not execute file changes, skill updates, skill creation, skill splitting, skill merging, or skill deprecation until the user explicitly approves the proposed action.
 
+
+## Proactive Governance Reminder
+
+The agent should proactively surface likely skill-governance opportunities even when the user does not explicitly invoke this skill. This is especially important when a proposed learning item may update existing skills, touch multiple skills, create dependency changes, duplicate rules, introduce conflicts, or require bug-library synchronization.
+
+When a likely governance opportunity is detected, do not edit skill files immediately. Briefly tell the user what may need governance review and ask whether to generate a structured governance proposal.
+
+Recommended reminder format:
+
+```text
+I noticed this may affect the skill system: <brief evidence>.
+Possible governance target: <skill names or dependency area>.
+Would you like me to generate a structured governance proposal before changing any skill files?
+```
+
+Only persist skill updates, bug-library entries, dependency changes, splits, merges, or deprecations after explicit user confirmation.
+
 ## Trigger Gate
 
 Run the lightweight trigger gate after a task, subagent run, review, bug fix, testing pass, prompt iteration, parsing workflow, or coding workflow finishes.
