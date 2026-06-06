@@ -1,0 +1,26 @@
+{
+  "report_title": "本地财务 BI 分析报告",
+  "default_period": "M",
+  "top_n": 8,
+  "sensitive_dimension_columns": ["客户", "客户名称", "供应商", "供应商名称"],
+  "amount_columns": ["采购金额", "销售金额", "收入", "成本", "利润", "应付金额", "付款金额", "未付金额"],
+  "field_candidates": {
+    "date": ["日期", "业务日期", "单据日期", "过账日期", "付款日期", "采购日期", "销售日期"],
+    "customer": ["客户", "客户名称"],
+    "supplier": ["供应商", "供应商名称"],
+    "product": ["产品", "物料", "物料名称", "商品", "SKU"],
+    "purchase_amount": ["采购金额", "采购额", "含税采购金额", "不含税采购金额"],
+    "sales_amount": ["销售金额", "销售额", "收入", "营业收入"],
+    "cost_amount": ["成本", "销售成本", "采购成本"],
+    "profit_amount": ["利润", "毛利", "净利润"],
+    "unit_price": ["单价", "采购单价", "销售单价", "含税单价", "不含税单价"],
+    "quantity": ["数量", "采购数量", "销售数量"],
+    "payment_days": ["账期", "账期天数", "付款账期", "应付账期", "回款账期"]
+  },
+  "privacy": {
+    "mask_amounts": true,
+    "mask_customer_supplier": true,
+    "amount_display": "index_or_percent_only",
+    "dimension_mask_prefix": "对象"
+  }
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>心情手账</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="editor-panel" aria-label="记录今天的心情">
+        <div class="brand-row">
+          <div>
+            <p class="eyebrow">Daily Mood Journal</p>
+            <h1>心情手账</h1>
+          </div>
+          <div class="today-chip" id="todayChip"></div>
+        </div>
+
+        <section class="sync-panel" aria-label="云端同步">
+          <div>
+            <p class="sync-title">云端同步</p>
+            <p class="sync-text" id="syncStatus">本机模式：记录只保存在当前浏览器。</p>
+          </div>
+          <div class="sync-controls">
+            <input id="syncPasscode" type="password" autocomplete="off" placeholder="输入同步暗号" />
+            <button class="ghost-btn" type="button" id="connectSyncBtn">同步</button>
+            <button class="ghost-btn" type="button" id="localModeBtn">本机</button>
+          </div>
+        </section>
+
+        <form id="entryForm" class="entry-form">
+          <label class="field">
+            <span>日期</span>
+            <input id="entryDate" name="entryDate" type="date" required />
+          </label>
+
+          <div class="field">
+            <span>今天的心情</span>
+            <div class="mood-grid" role="radiogroup" aria-label="选择心情">
+              <label class="mood-option is-happy">
+                <input type="radio" name="mood" value="开心" data-icon="😊" checked />
+                <span class="mood-icon">😊</span>
+                <span>开心</span>
+              </label>
+              <label class="mood-option is-calm">
+                <input type="radio" name="mood" value="平静" data-icon="😌" />
+                <span class="mood-icon">😌</span>
+                <span>平静</span>
+              </label>
+              <label class="mood-option is-tired">
+                <input type="radio" name="mood" value="疲惫" data-icon="🥱" />
+                <span class="mood-icon">🥱</span>
+                <span>疲惫</span>
+              </label>
+              <label class="mood-option is-sad">
+                <input type="radio" name="mood" value="悲伤" data-icon="😢" />
+                <span class="mood-icon">😢</span>
+                <span>悲伤</span>
+              </label>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>给今天留几句话</span>
+            <textarea id="entryText" name="entryText" rows="7" placeholder="写下发生了什么，或只是把心放在这里。"></textarea>
+          </label>
+
+          <label class="upload-box" for="imageInput">
+            <input id="imageInput" name="imageInput" type="file" accept="image/*" />
+            <span class="upload-mark">＋</span>
+            <span>上传一张今天的照片</span>
+          </label>
+          <div id="imagePreview" class="image-preview" aria-live="polite"></div>
+
+          <div class="action-row">
+            <button class="primary-btn" type="submit">保存记录</button>
+            <button class="ghost-btn" type="button" id="clearFormBtn">清空</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="timeline-panel" aria-label="心情历史">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Saved Moments</p>
+            <h2>过往记录</h2>
+          </div>
+          <button class="ghost-btn danger" type="button" id="clearAllBtn">清除全部</button>
+        </div>
+        <div class="stats-strip">
+          <div>
+            <strong id="entryCount">0</strong>
+            <span>条记录</span>
+          </div>
+          <div>
+            <strong id="latestMood">-</strong>
+            <span>最近心情</span>
+          </div>
+        </div>
+        <div id="timeline" class="timeline"></div>
+      </section>
+    </main>
+
+    <dialog id="supportDialog" class="support-dialog">
+      <div class="joke-card">
+        <button class="close-btn" type="button" id="closeSupportBtn" aria-label="关闭">×</button>
+        <p class="eyebrow" id="supportEyebrow">给今天的你</p>
+        <h3 id="supportTitle">先收下一点点回应</h3>
+        <p id="supportText"></p>
+      </div>
+    </dialog>
+
+    <script src="./config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

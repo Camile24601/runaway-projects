@@ -1,0 +1,34 @@
+# Skill Registry
+
+This registry is generated from workspace and user-maintained Codex skills for GitHub review.
+System skills under `.system` are excluded by default.
+
+## Skills
+
+- `ai-weekly-radar` (global): `/Users/camile/.codex/skills/ai-weekly-radar/SKILL.md`
+  - Run a weekly AI technology radar that scans GitHub, official OpenAI/Anthropic publications, and the user's skill ecosystem for newly useful AI techniques, concepts, tools, and Codex skills; rank signal quality, summarize the essence in Chinese first, and wait for the user to ask before expanding.
+- `finance-excel-logic-python-builder` (global): `/Users/camile/.codex/skills/finance-excel-logic-python-builder/SKILL.md`
+  - Generate or modify company-style Python automation programs from finance business logic described in Excel workbooks, sample source files, result templates, and existing scripts. Use when a finance requester supplies one or more Excel sheets containing filtering, matching, calculations, reconciliations, workbook updates, report-output rules, or step-by-step processing requirements, and Codex must analyze the rules, identify clarification items, split the work into multiple numbered .py files where appropriate, and implement pandas/xlwings-based processing while preserving established company patterns. Do not use as the primary skill for SAP GUI download clicking steps; coordinate with sap-pyautogui-download-builder for those steps.
+- `github-skill-sync` (global): `/Users/camile/.codex/skills/github-skill-sync/SKILL.md`
+  - Prepare Codex skill, bug-library, and project changes for safe GitHub synchronization. Use when the user wants to整理 skills, update a GitHub repo, generate commit messages, PR descriptions, issue/PR comments, changelog-style summaries, or review what should be uploaded before approving git add, commit, push, or GitHub comments.
+- `hatch-pet` (global): `/Users/camile/.codex/skills/hatch-pet/SKILL.md`
+  - Create, repair, validate, visually QA, and package Codex-compatible animated pets and pet spritesheets from character art, generated images, company or prospect brand cues, or visual references. Use when a user wants a lightweight-worker Codex pet workflow, a non-pixel custom pet style, a prospect or company mascot pet, or a full 8x9 animated pet atlas with transparent unused cells, QA contact sheets, and pet.json packaging. This skill composes the installed $imagegen system skill for visual generation and uses bundled scripts for deterministic spritesheet assembly.
+- `python-bug-library` (global): `/Users/camile/.codex/skills/python-bug-library/SKILL.md`
+  - Record, classify, and propose reusable prevention rules for Python bugs, exceptions, environment issues, pandas/xlwings/path problems, failed tests, and wrong Python-generated outputs. Use whenever Python code errors, a user reports a Python script failed elsewhere, a local run exposes a traceback, or a Python bug fix may need future prevention guidance.
+- `sap-pyautogui-download-builder` (global): `/Users/camile/.codex/skills/sap-pyautogui-download-builder/SKILL.md`
+  - Generate or modify SAP GUI download Python scripts by faithfully following the company's existing pyautogui, win32gui, xlwings, and configuration-file style. Use when the user provides a TCode, SAP key-operation steps, Excel export naming, upstream Excel dependencies, or asks to update company SAP download scripts while retaining original shared functions and framework behavior.
+- `skill-governance-meta-skill` (global): `/Users/camile/.codex/skills/skill-governance-meta-skill/SKILL.md`
+  - Govern, audit, maintain, and evolve a multi-skill ecosystem after task or subagent completion. Use when completed work may contain reusable lessons, bug patterns, testing or review rules, prompt improvements, dependency changes, skill conflicts, outdated rules, duplicated guidance, or knowledge drift. This skill does not execute the original task; it produces structured YAML governance proposals for human confirmation before any skill is updated.
+- `skill-learning-meta-skill` (global): `/Users/camile/.codex/skills/skill-learning-meta-skill/SKILL.md`
+  - Learn from completed tasks, failures, repeated work, and successful patterns to discover reusable capabilities, decide whether knowledge should become a bug-library entry, an existing skill update, or a new skill, and compound concrete experience into principles, workflows, checklists, skills, and meta-skill improvements. Use after meaningful task outcomes when the goal is to make the skill system smarter, not merely to govern or audit it.
+- `sql-bug-library` (global): `/Users/camile/.codex/skills/sql-bug-library/SKILL.md`
+  - Record, classify, and propose reusable prevention rules for SQL bugs, wrong-result queries, silent data issues, join or aggregation mistakes, schema drift, performance regressions, and database behavior surprises. Use when SQL fails with an error or when SQL returns plausible but incorrect, incomplete, duplicated, stale, or slow results.
+- `finance-bi-report` (workspace): `/Users/camile/Documents/跑路小项目/finance-bi-local/skill/finance-bi-report/SKILL.md`
+  - Use when generating local finance BI-style HTML reports from Excel, CSV, or approved database/MCP data sources, especially for sales, purchase, payment, profit statement, payable, unit-price, or payment-term analysis with strict privacy masking and non-exaggerated conclusions.
+- `github-skill-sync` (workspace): `/Users/camile/Documents/跑路小项目/.codex/skills/github-skill-sync/SKILL.md`
+  - Prepare Codex skill, bug-library, and project changes for safe GitHub synchronization. Use when the user wants to整理 skills, update a GitHub repo, generate commit messages, PR descriptions, issue/PR comments, changelog-style summaries, or review what should be uploaded before approving git add, commit, push, or GitHub comments.
+
+## Bug Libraries
+
+- `sql-bug-library` (global): `/Users/camile/.codex/skills/sql-bug-library/SKILL.md`
+- `python-bug-library` (global): `/Users/camile/.codex/skills/python-bug-library/SKILL.md`
