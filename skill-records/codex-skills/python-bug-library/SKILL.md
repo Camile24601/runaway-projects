@@ -116,3 +116,5 @@ python_bug_library_review:
 If the user approves persistent storage, append the entry to the chosen bug record file or create one project-level bug log. Keep the complete case in the bug library and add only concise prevention rules to domain skills.
 
 Do not store secrets, passwords, private tokens, or full proprietary datasets in bug entries.
+
+Recorded cases for this skill are stored in [references/recorded-bugs.md](references/recorded-bugs.md). When adding a new case, append a concise YAML entry there and keep `SKILL.md` focused on workflow and schema.

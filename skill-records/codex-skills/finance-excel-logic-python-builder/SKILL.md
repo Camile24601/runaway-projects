@@ -74,6 +74,7 @@ description: Generate or modify company-style Python automation programs from fi
 
 新建程序时：
 
+- 默认生成 Jupyter/Spyder 友好的顺序执行 `.py` 文件：按业务步骤从上到下排列，使用普通注释标题分段，方便逐段测试和改参数；函数只封装可复用动作。除非用户明确要求 CLI、模块化包、后台服务或可导入库，不要默认使用 `main()` 或 `if __name__ == "__main__"` 包装执行流程。
 - 优先读取同类现有程序作为母版。
 - 没有合适母版时，使用 [assets/business-processing-template.py](assets/business-processing-template.py)。
 - 默认沿用 `pandas`、`numpy`、`xlwings`、`configparser`、`get_path()`、`find_files()`、`read()` 和 `df_notnull()` 的公司模式。
@@ -95,6 +96,11 @@ description: Generate or modify company-style Python automation programs from fi
 - 每张业务表如用户要求“序号列”，必须保留中文列 `序号`。
 - 导入日志、操作日志和运行状态如已由用户确认需要，必须纳入数据库确认稿；但字段保持精简。
 - 数据库读取/写入涉及中文列名时，必须使用安全转义/参数化；任何数据库方法优化必须先给用户确认。
+- 数据库结构或写入口径变更后，必须同步检查并更新：DDL 字段、唯一键、示例 INSERT 数据、Python 写入字段、界面展示/编辑字段；如果旧表已经在 MySQL 建成，必须提醒用户可能需要单独的 `ALTER TABLE` 迁移 SQL，不能只依赖 `CREATE TABLE IF NOT EXISTS`。
+- 本地实验版 Web/桌面界面如果用户已验证 `PyMySQL` 直连可用，可按用户确认优先使用直连参数；共享盘 `parameter.ini` 或网络路径探测必须可关闭，且路径检查必须防护 `OSError`，避免登录或启动阶段卡死。
+- 生成可编辑结果表界面时，必须确认唯一定位列（如 `序号`），并默认提供：双击编辑、待保存单元格高亮、保存确认框、撤销修改、按唯一键写回、操作日志。配置表默认只读或停用按钮化，除非用户明确开放增删改。
+- 可编辑表的筛选候选值不得只依赖数据库 `DISTINCT` 或缓存；必须合并当前界面模型中的未保存修改值，保存成功后清理当前表筛选缓存，并验证“修改后立即可筛选”的场景。
+- 面向业务人员的数据查看/编辑界面默认贴近 Excel 心智模型：表头筛选或明确列对齐筛选、选择显示列、横向滚动、双击编辑、黄色待保存提示；不要让筛选控件与列名脱节。
 
 如果用户只提供逻辑说明而未提供样例原始数据或输出模板，可以生成带明确 `TODO` 和待确认清单的程序草稿；说明其未经过真实字段及结果验证。
 
