@@ -1,0 +1,4 @@
+interface:
+  display_name: "财务逻辑 Python 生成器"
+  short_description: "按 Excel 业务逻辑拆分并生成财务自动化程序文件"
+  default_prompt: "使用 $finance-excel-logic-python-builder 根据财务逻辑说明和样例数据拆分步骤并生成 Python 程序。"

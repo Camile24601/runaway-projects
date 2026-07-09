@@ -1,0 +1,7 @@
+interface:
+  display_name: "Skill Governance Meta Skill"
+  short_description: "Govern skill updates, conflicts, drift, and dependencies"
+  default_prompt: "Use $skill-governance-meta-skill to audit a completed agent task and propose any needed skill updates."
+
+policy:
+  allow_implicit_invocation: true

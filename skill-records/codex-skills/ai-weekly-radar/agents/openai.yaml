@@ -1,0 +1,3 @@
+display_name: AI Weekly Radar
+short_description: 每周筛选 GitHub 与官方 AI 新技术，并先用中文提炼精华。
+default_prompt: 每周扫描新的好用 AI 技术、概念和 skill 候选，优先展示最值得我关注的中文精华。

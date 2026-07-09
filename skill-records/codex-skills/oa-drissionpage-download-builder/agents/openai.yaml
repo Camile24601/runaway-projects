@@ -1,0 +1,4 @@
+interface:
+  display_name: "OA Download Builder"
+  short_description: "Build OA browser download scripts."
+  default_prompt: "根据现有 OA 下载脚本和需求，生成或修改 DrissionPage 浏览器自动化下载脚本，并保留公司配置读取、验证码重试、导出等待和 Excel 合并模式。"

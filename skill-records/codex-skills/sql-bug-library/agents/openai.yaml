@@ -1,0 +1,7 @@
+interface:
+  display_name: "SQL Bug Library"
+  short_description: "Record SQL errors and silent wrong-result patterns"
+  default_prompt: "Use $sql-bug-library to record a SQL bug or silent wrong-result pattern."
+
+policy:
+  allow_implicit_invocation: true

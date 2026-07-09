@@ -1,0 +1,7 @@
+interface:
+  display_name: "Python Bug Library"
+  short_description: "Record Python bugs with causes, fixes, and prevention rules"
+  default_prompt: "Use $python-bug-library to record a Python bug fix and propose prevention rules."
+
+policy:
+  allow_implicit_invocation: true

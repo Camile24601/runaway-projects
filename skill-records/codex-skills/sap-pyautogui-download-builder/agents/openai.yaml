@@ -1,0 +1,4 @@
+interface:
+  display_name: "SAP 下载脚本保真生成器"
+  short_description: "沿用公司原始公共函数，仅修改 SAP 下载业务配置和操作步骤"
+  default_prompt: "使用 $sap-pyautogui-download-builder 按公司原脚本写法生成或修改 SAP 下载脚本，并保留公共函数不重构。"

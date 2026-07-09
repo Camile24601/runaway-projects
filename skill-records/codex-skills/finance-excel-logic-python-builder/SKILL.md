@@ -19,8 +19,10 @@ description: Generate or modify company-style Python automation programs from fi
 2. 读取 [references/company-python-style.md](references/company-python-style.md)，遵守现有程序风格。
 3. 读取 [references/company-environment-constraints.md](references/company-environment-constraints.md)，遵守公司可用库、数据库读写、Excel 加密文件读取和 bug 复盘约束。
 4. 需求涉及多个程序或多个输出阶段时，读取 [references/multi-step-design.md](references/multi-step-design.md)。
-5. 写完代码后读取 [references/validation-checklist.md](references/validation-checklist.md)。
-6. 新建数据处理或结果回写脚本时，可复制 [assets/business-processing-template.py](assets/business-processing-template.py) 的相关片段；如有同业务或同类现有脚本，以现有脚本为最高优先级母版。
+5. 需求涉及公司 RPA 项目整体设计、步骤拆分、运行参数、外部系统下载、人工复核节点或可重跑边界时，读取 [references/company-rpa-design-rules.md](references/company-rpa-design-rules.md)。
+6. 需求涉及发票 PDF 识别、抵扣勾选清单匹配、上传版或汇总打印时，读取 [references/invoice-pdf-recognition-and-output-style.md](references/invoice-pdf-recognition-and-output-style.md)。
+7. 写完代码后读取 [references/validation-checklist.md](references/validation-checklist.md)。
+8. 新建数据处理或结果回写脚本时，可复制 [assets/business-processing-template.py](assets/business-processing-template.py) 的相关片段；如有同业务或同类现有脚本，以现有脚本为最高优先级母版。
 
 ## 工作流程
 

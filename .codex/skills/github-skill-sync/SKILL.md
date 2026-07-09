@@ -64,7 +64,7 @@ Treat these as sensitive until reviewed:
    python3 .codex/skills/github-skill-sync/scripts/export_skill_records.py --workspace .
    ```
 
-   Add `--write` only after the user approves creating or refreshing `skill-records/`.
+   Add `--write` only after the user approves creating or refreshing `skill-records/`. The exporter mirrors complete skill folders by default, including `SKILL.md`, `references/`, `assets/`, and `agents/`, while excluding caches, temporary files, and files larger than the exporter limit.
 
 4. Review the output with the user:
    - `upload_recommended`

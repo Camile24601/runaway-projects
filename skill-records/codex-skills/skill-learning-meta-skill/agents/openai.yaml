@@ -1,0 +1,7 @@
+interface:
+  display_name: "Skill Learning Meta Skill"
+  short_description: "Turn task experience into reusable skill capability"
+  default_prompt: "Use $skill-learning-meta-skill to analyze a completed task and decide whether it should become a bug entry, skill update, or new skill."
+
+policy:
+  allow_implicit_invocation: true

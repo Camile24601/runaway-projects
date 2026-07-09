@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Skill Sync"
+  short_description: "Prepare safe GitHub sync reviews."
+  default_prompt: "整理当前项目和 Codex skills 的变更，生成 GitHub 风格提交说明、评论草稿和上传风险清单。"
