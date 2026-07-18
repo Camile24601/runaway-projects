@@ -18,8 +18,9 @@ description: Generate or modify SAP GUI download Python scripts by faithfully fo
 5. 用户需求不完整时，按 [references/request-spec.md](references/request-spec.md) 补充缺失项，或生成带 `TODO` 的草稿并明确不可直接执行。
 6. 生成期间选择脚本时，读取 [references/period-selection-rules.md](references/period-selection-rules.md)，优先套用账号/密码/公司/期间四输入框模式。
 7. 涉及上游 Excel 和多项选择时，参考 [references/zmm020-worked-example.md](references/zmm020-worked-example.md) 的原写法模式；遇到 AP051/F.19/FBL1N/ZMM020 组合时，优先读取 [references/ap051-worked-example.md](references/ap051-worked-example.md)。
-8. 输出完整 `.py` 文件，除非用户明确只要代码片段或解释。默认保持公司脚本的 Jupyter/Spyder 友好顺序执行风格：按配置读取、登录、下载、保存等业务步骤从上到下排列，用普通注释标题分段；除非用户明确要求 CLI 或模块化入口，不要默认改成 `main()` / `if __name__ == "__main__"` 包装。
-9. 生成后运行 `python -m py_compile <output.py>`；不得声称已验证真实 SAP 点击流程，除非确实在用户环境完成验证。
+8. 涉及 temp 文件、下载后 Excel 回写、字段补充、跨系统补下载或运行状态更新时，读取 [references/postprocess-status-rules.md](references/postprocess-status-rules.md)。
+9. 输出完整 `.py` 文件，除非用户明确只要代码片段或解释。默认保持公司脚本的 Jupyter/Spyder 友好顺序执行风格：按配置读取、登录、下载、保存等业务步骤从上到下排列，用普通注释标题分段；除非用户明确要求 CLI 或模块化入口，不要默认改成 `main()` / `if __name__ == "__main__"` 包装。
+10. 生成后运行 `python -m py_compile <output.py>`；不得声称已验证真实 SAP 点击流程，除非确实在用户环境完成验证。
 
 ## 默认保留内容
 

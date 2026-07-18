@@ -129,3 +129,5 @@ sql_bug_library_review:
 If the user approves persistent storage, append the entry to the chosen bug record file or create one project-level SQL bug log. Keep full wrong-result evidence in the SQL bug library and add only concise prevention rules to SQL review, testing, or coding skills.
 
 Do not store secrets, credentials, private connection strings, or full proprietary datasets in bug entries.
+
+Recorded cases for this skill are stored in [references/recorded-bugs.md](references/recorded-bugs.md). Keep `SKILL.md` focused on workflow and schema.
