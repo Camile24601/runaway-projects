@@ -13,13 +13,14 @@
 - 自动化/SAP/GUI：`PyAutoGUI`、`pywin32`、`DrissionPage` 等已在公司清单中，但 SAP 下载逻辑优先遵守项目给定母版和 `sap-pyautogui-download-builder`。
 - PDF/OCR：`pdfplumber`、`pdfminer.six`、`PyMuPDF`、`PyPDF2`、`pypdfium2`、`pytesseract` 等在清单中。
 
-## Excel 读取约束
+## Excel 读写约束
 
-公司文件常有加密或受保护场景。默认读取 Excel 使用公司母版的 `xlwings` + `read()` 函数，不优先使用 `openpyxl` 直接读取业务文件，除非：
+公司 RPA 的业务工作簿可能包含加密、保护、公式、格式、筛选、隐藏内容或 Excel COM 行为。凡程序直接读取、创建、修改或保存 Excel 工作簿，必须使用公司母版的 `xlwings` 方法：
 
-- 只是在分析非加密逻辑说明文件；
-- 用户明确允许；
-- 或 `xlwings` 不适合当前任务并已向用户说明。
+- 读取使用 `xlwings` + `read()`；写回、另存和新建工作簿也使用 `xlwings`。
+- `pandas` 只用于内存中的 DataFrame 清洗、匹配、计算和列重排。
+- 除非用户明确批准例外，不得使用 `pandas.read_excel()`、`DataFrame.to_excel()`、`pandas.ExcelWriter`、`openpyxl` 或 `xlsxwriter` 直接读写业务工作簿。
+- 即使文件看起来是普通 `.xlsx`，也不得仅因方便而绕过 `xlwings`。
 
 参考母版：桌面 `03-跟进汇总表生成-预付未开票.py`。其中保留以下公司习惯：
 
@@ -28,6 +29,13 @@
 - 读取前取消筛选和隐藏列：`sheet.api.AutoFilterMode = False`，并取消指定范围隐藏列。
 - `read(path, sht_num_name=0, row=0, col_list=0)` 负责表头行、列校验、空表处理和关闭 workbook。
 - `df_notnull()` 用于清理空值和编号字符，但会去前导零；对客户代码、供应商、物料号、凭证号等字段要先确认是否允许去零。
+
+## Outlook 正文表格约束
+
+- 使用本机 Outlook COM/MAPI 读取邮件时，默认提取正文中全部实质性 HTML 表格，并完整保留实际行列。
+- 不把预设字段或固定表头作为能否提取的硬性条件；字段名只可用于排序或优先选择，除非用户明确要求按表头过滤。
+- 多表格输出时，将信息量最大的主表放在 `sheet1`，其余表格写入独立 Sheet。
+- 输出 Excel 必须使用 `xlwings` 创建和保存。
 
 ## 数据库读写约束
 

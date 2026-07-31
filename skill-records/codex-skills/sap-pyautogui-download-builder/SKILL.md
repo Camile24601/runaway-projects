@@ -11,7 +11,7 @@ description: Generate or modify SAP GUI download Python scripts by faithfully fo
 
 ## 工作流程
 
-1. 修改已有脚本时，先读取目标脚本，并以该文件本身为最高优先级母版。
+1. 修改已有脚本时，先读取目标脚本；再检查用户指定的最新已验证公司脚本和本 Skill 母版。若用户指出目标脚本的公共函数已过期，以最新已验证公司脚本为公共函数来源，业务段仍以目标脚本为准。
 2. 新建脚本时，先读取 [assets/company-sap-download-mother-reference.py](assets/company-sap-download-mother-reference.py)，复制其公共结构，再替换业务段。
 3. 新建或修改包含 SAP 下载的完整项目时，必须默认同时生成或保留 `01-公司期间选择.py` 和 `02-SAP数据下载*.py`；读取 [assets/company-period-selection-reference.py](assets/company-period-selection-reference.py) 作为轻量通用母版，读取 [assets/company-sap-download-mother-reference.py](assets/company-sap-download-mother-reference.py) 作为下载母版。只有用户明确说明已有可复用期间选择脚本或不需要第一步时才跳过 `01`。
 4. 修改代码前读取 [references/preservation-rules.md](references/preservation-rules.md)，识别允许变更段和默认禁止变更段。
@@ -20,7 +20,7 @@ description: Generate or modify SAP GUI download Python scripts by faithfully fo
 7. 涉及上游 Excel 和多项选择时，参考 [references/zmm020-worked-example.md](references/zmm020-worked-example.md) 的原写法模式；遇到 AP051/F.19/FBL1N/ZMM020 组合时，优先读取 [references/ap051-worked-example.md](references/ap051-worked-example.md)。
 8. 涉及 temp 文件、下载后 Excel 回写、字段补充、跨系统补下载或运行状态更新时，读取 [references/postprocess-status-rules.md](references/postprocess-status-rules.md)。
 9. 输出完整 `.py` 文件，除非用户明确只要代码片段或解释。默认保持公司脚本的 Jupyter/Spyder 友好顺序执行风格：按配置读取、登录、下载、保存等业务步骤从上到下排列，用普通注释标题分段；除非用户明确要求 CLI 或模块化入口，不要默认改成 `main()` / `if __name__ == "__main__"` 包装。
-10. 生成后运行 `python -m py_compile <output.py>`；不得声称已验证真实 SAP 点击流程，除非确实在用户环境完成验证。
+10. 复制公共函数后使用源码或 AST 对照确认函数与选定最新版一致，不得凭记忆手工重写；再运行 `python -m py_compile <output.py>`。不得声称已验证真实 SAP 点击流程，除非确实在用户环境完成验证。
 
 ## 默认保留内容
 
@@ -29,6 +29,7 @@ description: Generate or modify SAP GUI download Python scripts by faithfully fo
 - `get_path()`、`read()`、`df_notnull()` 及其调用风格。
 - `find_hwnd_all()`、`find_hwnd_blur()`、`click_multi_logon()`、`mul_choice()`、`load_complete()`。
 - `save_excel()` 与已有的经确认特殊保存函数。
+- `find_sap_logon_window()`、`sap_login()` 等最新版登录函数；默认兼容 SAP Logon 740/800。
 - SAP 登录、配置读取和退出 SAP 的整体流程。
 - 原脚本的变量命名风格，例如 `sap_path`、`com_lists`、`fin_period`、`df_01`。
 - AP051/F.19 类特殊布局处理应保留在对应 `load_F19()` 中，不默认挪到主循环后处理。
@@ -58,6 +59,8 @@ df_01 = df_01.drop_duplicates(subset=['凭证编号'], keep='first')
 ```
 
 如果编号需要保留前导零，不得直接使用会执行 `str.lstrip('0')` 的清理逻辑；先向用户确认或只过滤空值。
+
+凡程序直接读取、创建、修改或保存上游/下游 Excel 工作簿，必须使用 `xlwings`；`pandas` 只用于 DataFrame 数据处理。除非用户明确批准例外，不得使用 `pandas.read_excel()`、`DataFrame.to_excel()`、`ExcelWriter`、`openpyxl` 或 `xlsxwriter` 直接读写业务工作簿。SAP GUI 的 ALV 导出对话框仍由经验证的 `save_excel()` 键鼠流程处理。
 
 ## 资料
 

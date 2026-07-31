@@ -368,7 +368,6 @@ def click_multi_logon_checkbox(offset_x=-250):
         raise Exception("❌ 未找到任何 Button 控件")
 
     last_btn = buttons[-1]
-    text = win32gui.GetWindowText(last_btn)
     rect = win32gui.GetWindowRect(last_btn)
     x_btn, y_btn = rect[0], rect[1]  # 左上角坐标（屏幕坐标）
 
@@ -403,7 +402,6 @@ def click_multi_logon(offset_x=-100):
         raise Exception("❌ 未找到任何 Button 控件")
 
     last_btn = buttons[-1]
-    text = win32gui.GetWindowText(last_btn)
     rect = win32gui.GetWindowRect(last_btn)
     x_btn, y_btn = rect[0], rect[1]  # 左上角坐标（屏幕坐标）
 
@@ -524,11 +522,16 @@ def choose_layout(layout_text):
 
 def load_complete(max_duration=1200,pre_name='F8',time_sleep=1.3):
     def _get_menu_items():
-        hwnd = win32gui.GetForegroundWindow()
-        menu_hwnd = win32gui.GetMenu(hwnd)
-        if not menu_hwnd:
+        try:
+            hwnd = win32gui.GetForegroundWindow()
+            if not hwnd:
+                return []
+            menu_hwnd = win32gui.GetMenu(hwnd)
+            if not menu_hwnd:
+                return []
+            count = win32gui.GetMenuItemCount(menu_hwnd)
+        except Exception:
             return []
-        count = win32gui.GetMenuItemCount(menu_hwnd)
         items = []
         for i in range(count):
             try:
@@ -542,17 +545,15 @@ def load_complete(max_duration=1200,pre_name='F8',time_sleep=1.3):
     ag.press(pre_name)
     if not menu_before:
         menu_before = _get_menu_items()
-    for i in range(max_duration):
+    deadline = time.monotonic() + max_duration
+    while time.monotonic() < deadline:
         time.sleep(0.5)
         ag.press('f24')
         menu_after = _get_menu_items()
-        if menu_before != menu_after:
+        if menu_before and menu_after and menu_before != menu_after:
             time.sleep(time_sleep)
-            break
-        else:
-            if i==max_duration-1:
-                raise Exception(print(f"超时！{max_duration} 秒内未检测到菜单变化，判定加载失败。"))
-            continue
+            return
+    raise TimeoutError(f"超时！{max_duration} 秒内未检测到菜单变化，判定加载失败。")
 
 
 # ## 保存函数
@@ -592,8 +593,8 @@ def get_excel_pids():
 
 
 def save_excel(save_path):
-    # 保存数据，并只关闭本次导出新打开的 Excel 进程。
     window_A = save_foreground_window()
+    # 保存数据，并只关闭本次导出新打开的 Excel 进程。
     for i in range(0,3):
         ag.press('f24')
         w, h = ag.size()
@@ -621,45 +622,48 @@ def save_excel(save_path):
     ag.hotkey('shift','tab')
     try:
         os.remove(save_path)
-    except Exception:
+    except:
         pass
     pyperclip.copy(save_path)
     time.sleep(0.3)
     ag.hotkey('ctrl','v')
     before_pids_s = get_excel_pids()
     ag.hotkey('alt','s')
-    for _ in range(30):
+    for _ in range(20):
         ag.press('f24')
         time.sleep(0.5)
         before_pids_e = get_excel_pids()
-        if find_hwnd_blur('GUI 安全性')==0 and before_pids_s == before_pids_e:
-            continue
-        else:
-            time.sleep(0.7)
+        if find_hwnd_blur('GUI 安全性') != 0 or before_pids_e != before_pids_s:
+            if find_hwnd_blur('GUI 安全性') != 0:
+                time.sleep(0.7)
+                ag.hotkey('alt','a')
             break
-    if find_hwnd_blur('GUI 安全性')!=0:
-        ag.hotkey('alt','a')
-    for _ in range(30):
+        else:
+            time.sleep(0.5)
+            continue
+    for _ in range(20):
         ag.press('f24')
         time.sleep(0.5)
         before_pids_e = get_excel_pids()
-        if before_pids_s == before_pids_e:
-            if find_hwnd_blur('GUI 安全性')!=0:
+        if find_hwnd_blur('GUI 安全性') != 0 or before_pids_e != before_pids_s:
+            if before_pids_e == before_pids_s:
+                time.sleep(0.7)
                 ag.hotkey('alt','d')
                 time.sleep(0.6)
                 ag.press('enter')
-            continue
-        else:
-            for pid in before_pids_e - before_pids_s:
-                try:
-                    psutil.Process(pid).terminate()
-                except Exception:
-                    pass
-            time.sleep(0.7)
+            else:
+                for pid in before_pids_e - before_pids_s:
+                    try:
+                        psutil.Process(pid).terminate()
+                    except Exception:
+                        pass
+                time.sleep(0.5)
             break
+        else:
+            time.sleep(0.5)
+            continue
     activate_window(window_A)
     time.sleep(0.8)
-    ag.press('f3')
 
 
 # In[14]:
@@ -758,51 +762,99 @@ fin_period = business_config[business_section].get('fin_period')
 
 
 sap_app = r"C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe" #saplogon程序本地完整路径
-subprocess.Popen(sap_app)
-time.sleep(1)
-flt=0
-while flt==0:
-    try:
-        hwnd = win32gui.FindWindow(None,"SAP Logon 740")
-        flt=win32gui.FindWindowEx(hwnd,None,"Edit", None)
-    except:
+
+
+def find_sap_logon_window():
+    hwnd_title = {}
+
+    def get_all_hwnd(hwnd, mouse):
+        if (win32gui.IsWindow(hwnd)
+                and win32gui.IsWindowEnabled(hwnd)
+                and win32gui.IsWindowVisible(hwnd)):
+            title = win32gui.GetWindowText(hwnd)
+            if str(title).startswith("SAP Logon"):
+                hwnd_title[hwnd] = title
+
+    win32gui.EnumWindows(get_all_hwnd, 0)
+    for hwnd, title in hwnd_title.items():
+        return hwnd, title
+    return 0, ""
+
+
+def sap_login(system_ip, login_user, login_password):
+    subprocess.Popen(sap_app)
+    time.sleep(1)
+    hwnd = 0
+    title = ""
+    for _ in range(60):
+        hwnd, title = find_sap_logon_window()
+        if hwnd != 0:
+            break
+        time.sleep(0.5)
+    if hwnd == 0:
+        raise RuntimeError("启动 SAP Logon 后，30 秒内未找到 SAP Logon 窗口。")
+
+    if "740" in title:
+        flt = 0
+        for _ in range(60):
+            flt = win32gui.FindWindowEx(hwnd, None, "Edit", None)
+            if flt != 0:
+                break
+            time.sleep(0.5)
+        if flt == 0:
+            raise RuntimeError("已找到 SAP Logon 740，但未找到系统 IP 输入框。")
+        win32gui.SendMessage(flt, win32con.WM_SETTEXT, None, system_ip)
+        win32gui.SendMessage(flt, win32con.WM_KEYDOWN, win32con.VK_RIGHT, 0)
+        win32gui.SendMessage(flt, win32con.WM_KEYUP, win32con.VK_RIGHT, 0)
+        time.sleep(0.1)
+
+        dlg = win32gui.FindWindowEx(hwnd, None, "Button", None)
+        win32gui.SendMessage(dlg, win32con.WM_LBUTTONDOWN, 0)
+        win32gui.SendMessage(dlg, win32con.WM_LBUTTONUP, 0)
+    else:
+        win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+        win32gui.SetForegroundWindow(hwnd)
+        time.sleep(0.5)
+        # SAP Logon 800 通过 Ctrl+F 定位系统搜索框。
+        ag.hotkey('ctrl', 'f')
+        time.sleep(0.5)
+        ag.hotkey('ctrl', 'a')
+        pyperclip.copy(str(system_ip))
+        ag.hotkey('ctrl', 'v')
+        time.sleep(0.5)
+        ag.press('enter')
         time.sleep(0.5)
 
-win32gui.SendMessage(flt,win32con.WM_SETTEXT,None,"TODO_SAP_SYSTEM")#系统名
-win32gui.SendMessage(flt,win32con.WM_KEYDOWN,win32con.VK_RIGHT,0)
-win32gui.SendMessage(flt,win32con.WM_KEYUP,win32con.VK_RIGHT,0)
-time.sleep(0.1)
+    for _ in range(10):
+        ag.press('f24')
+        time.sleep(0.5)
+        if win32gui.FindWindow(None, 'SAP') != 0:
+            time.sleep(0.3)
+            break
 
-dlg = win32gui.FindWindowEx(hwnd,None,"Button", None) #登陆（0）
-win32gui.SendMessage(dlg,win32con.WM_LBUTTONDOWN,0)
-win32gui.SendMessage(dlg,win32con.WM_LBUTTONUP,0)
+    hwnd = win32gui.FindWindow(None, 'SAP')
+    if hwnd == 0:
+        raise RuntimeError(
+            f"已在 {title} 中输入系统 IP：{system_ip}，"
+            "但未进入 SAP 账号密码登录窗口。"
+        )
+    win32gui.ShowWindow(hwnd, win32con.SW_SHOWMAXIMIZED)
+    time.sleep(1)
+    pyperclip.copy(login_user)
+    time.sleep(0.3)
+    ag.hotkey('ctrl', 'v')
+    ag.press('tab')
+    pyperclip.copy(login_password)
+    time.sleep(0.3)
+    ag.hotkey('ctrl', 'v')
+    ag.press('enter')
+    time.sleep(1)
+    if find_hwnd_blur('多次登录') != 0:
+        click_multi_logon()
+        # 不终止其他人登录
 
-for _ in range(10):
-    ag.press('f24')
-    time.sleep(0.5)
-    if win32gui.FindWindow(None,'SAP')!=0:
-        time.sleep(0.3)
-        break
-    else:
-        continue
-        
-hwnd = win32gui.FindWindow(None,'SAP') # 第二个参数为Excel窗口标题    
-win32gui.ShowWindow(hwnd, win32con.SW_SHOWMAXIMIZED)#最大化
-time.sleep(1)
-pyperclip.copy(username)
-time.sleep(0.3)
-ag.hotkey('ctrl','v')
-ag.press('tab')# 单击tab键
 
-pyperclip.copy(password)
-time.sleep(0.3)
-ag.hotkey('ctrl','v')
-
-ag.press('enter')#登陆
-time.sleep(1)
-if find_hwnd_blur('多次登录')!=0:
-    click_multi_logon()
-        #不终止其他人登陆
+sap_login("TODO_SAP_SYSTEM", username, password)
 
 
 # # SAP数据加载
@@ -1220,5 +1272,6 @@ for _ in range(10):
         break
 
 time.sleep(1)
-h=win32gui.FindWindow(None,"SAP Logon 740")
-win32gui.PostMessage(h, win32con.WM_CLOSE, 0, 0)#SAP Logon 740
+h, _ = find_sap_logon_window()
+if h != 0:
+    win32gui.PostMessage(h, win32con.WM_CLOSE, 0, 0)#SAP Logon 740/800
