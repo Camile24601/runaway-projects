@@ -81,6 +81,8 @@ description: Generate or modify company-style Python automation programs from fi
 - 优先读取同类现有程序作为母版。
 - 没有合适母版时，使用 [assets/business-processing-template.py](assets/business-processing-template.py)。
 - 默认沿用 `pandas`、`numpy`、`xlwings`、`configparser`、`get_path()`、`find_files()`、`read()` 和 `df_notnull()` 的公司模式。
+- 公司 RPA 中凡直接读取、创建、修改或保存 Excel 工作簿，必须使用 `xlwings`；`pandas` 只用于 DataFrame 数据处理。除非用户明确批准例外，不得使用 `pandas.read_excel()`、`DataFrame.to_excel()`、`ExcelWriter`、`openpyxl` 或 `xlsxwriter` 直接读写业务工作簿。
+- 从 Outlook 正文提取 HTML 表格时，默认按表格结构识别并完整保留实际行列，不把预设表头作为硬性门槛。存在多个实质性表格时，将信息量最大的主表写入 `sheet1`，其余表格按顺序写入独立 Sheet；只有用户明确要求特定表头时才按字段筛选。
 - 不新增 `requirements.txt` 外的第三方库；确有必要时，先向用户说明原因并等待确认。
 - 数据库读写若要优化公司现有方法，必须先列出优化点、影响范围和兼容性风险，等待用户确认后再修改。
 - 对每个输入 DataFrame 明确来源文件、Sheet、字段列表、类型转换与清洗口径。

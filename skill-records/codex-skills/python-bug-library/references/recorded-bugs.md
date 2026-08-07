@@ -46,6 +46,151 @@ bug_entry:
     - "flask"
 ```
 
+## pybug-20260728-outlook-table-header-gate
+
+```yaml
+bug_entry:
+  id: "pybug-20260728-outlook-table-header-gate"
+  status: "recorded"
+  language: "python"
+  title: "固定表头门槛导致 Outlook 正文表格可能漏提取"
+  severity: "high"
+  source:
+    task_summary: "从 Outlook 邮件正文提取表格并另存为公司业务 Excel。"
+    user_reported: true
+    environment: "Windows Outlook COM/MAPI, HTMLBody, xlwings"
+    command_or_action: "按预设 12 列表头选择邮件正文表格"
+  symptom:
+    error_type: "wrong_output"
+    message: ""
+    traceback_summary: ""
+    wrong_output_summary: "邮件中存在有效表格，但只要字段名或列数变化就可能被判定为无目标表格。"
+  root_cause:
+    category: "logic"
+    explanation: "把示例表头误当成提取前置条件，而用户要求是完整保存识别到的实际表格。"
+  decomposition_link:
+    caused_by: "premature_coding"
+    explanation: "在未确认表头是否固定前，将截图示例固化为解析门槛。"
+  fix:
+    changed_files:
+      - "01-Outlook邮件表格下载.py"
+    fix_summary: "改为按 HTML 表格结构识别全部实质性表格，完整保留行列，最大主表放入 sheet1。"
+    prevention_rule: "邮件正文表格提取默认不得以预设表头作为硬门槛；除非用户明确要求字段过滤。"
+  validation:
+    commands:
+      - "使用两个不同表头的模拟 HTML 表格测试完整提取和主表排序"
+    evidence: "模拟测试同时提取两个表格，最大表格排在 sheet1。"
+  skill_updates:
+    should_update_other_skills: true
+    targets:
+      - skill: "finance-excel-logic-python-builder"
+        proposed_rule: "Outlook 正文表格默认按结构完整提取，不硬编码表头门槛。"
+  tags:
+    - "outlook"
+    - "html-table"
+    - "xlwings"
+    - "wrong-output"
+```
+
+## pybug-20260728-sap-shared-function-version-drift
+
+```yaml
+bug_entry:
+  id: "pybug-20260728-sap-shared-function-version-drift"
+  status: "recorded"
+  language: "python"
+  title: "SAP 公共函数未从最新已验证公司脚本复制"
+  severity: "high"
+  source:
+    task_summary: "精简旧 SAP 下载脚本并只保留现有 TCode。"
+    user_reported: true
+    environment: "Windows SAP GUI, pyautogui, win32gui"
+    command_or_action: "整理 load_complete、save_excel 与 SAP 登录函数"
+  symptom:
+    error_type: "wrong_implementation"
+    message: ""
+    traceback_summary: ""
+    wrong_output_summary: "公共函数虽被优化，但不是用户已验证的最新公司版本，可能丢失 SAP Logon 800 等兼容逻辑。"
+  root_cause:
+    category: "logic"
+    explanation: "只参考旧目标文件和 Skill 母版，没有先寻找用户本地更新的已验证公司脚本。"
+  decomposition_link:
+    caused_by: "missing_validation"
+    explanation: "缺少公共函数来源选择和源码/AST 等同性检查。"
+  fix:
+    changed_files:
+      - "02-SAP数据下载.py"
+    fix_summary: "从最新已验证公司脚本复制公共函数，并通过 AST 对照确认完全一致。"
+    prevention_rule: "用户指出 SAP 公共函数过期时，必须寻找最新已验证公司脚本、原样复制并做源码或 AST 对照。"
+  validation:
+    commands:
+      - "对关键公共函数执行 AST 等同性比较"
+      - "python -m py_compile 02-SAP数据下载.py"
+    evidence: "关键公共函数与最新版来源逐项一致，语法检查通过。"
+  skill_updates:
+    should_update_other_skills: true
+    targets:
+      - skill: "sap-pyautogui-download-builder"
+        proposed_rule: "区分业务母版与公共函数版本，公共函数必须从最新已验证来源复制并核对。"
+  tags:
+    - "sap"
+    - "version-drift"
+    - "shared-functions"
+    - "validation"
+```
+
+## pybug-20260728-company-rpa-excel-io-policy
+
+```yaml
+bug_entry:
+  id: "pybug-20260728-company-rpa-excel-io-policy"
+  status: "recorded"
+  language: "python"
+  title: "公司 RPA Excel 读写规则未被严格执行"
+  severity: "high"
+  source:
+    task_summary: "生成 Outlook、SAP、OA 与财务 Excel 自动化程序。"
+    user_reported: true
+    environment: "Windows Excel COM, xlwings"
+    command_or_action: "直接读取、创建、修改或保存业务工作簿"
+  symptom:
+    error_type: "wrong_implementation"
+    message: ""
+    traceback_summary: ""
+    wrong_output_summary: "Agent 可能因方便改用 pandas/openpyxl/xlsxwriter 读写业务工作簿，违反已反复确认的公司约束。"
+  root_cause:
+    category: "excel"
+    explanation: "旧 Skill 只写了优先使用 xlwings，仍保留宽泛例外，没有表达为强制公司规则。"
+  decomposition_link:
+    caused_by: "unclear_boundary"
+    explanation: "没有明确区分 pandas 的内存数据处理职责和 xlwings 的工作簿 I/O 职责。"
+  fix:
+    changed_files:
+      - "finance-excel-logic-python-builder"
+      - "sap-pyautogui-download-builder"
+      - "oa-drissionpage-download-builder"
+    fix_summary: "将公司业务工作簿 I/O 统一限定为 xlwings，pandas 仅处理 DataFrame。"
+    prevention_rule: "公司 RPA 直接读写 Excel 工作簿必须使用 xlwings；其他库仅在用户明确批准例外时使用。"
+  validation:
+    commands:
+      - "扫描生成程序中的 read_excel、to_excel、ExcelWriter、openpyxl、xlsxwriter"
+    evidence: "目标程序只保留 xlwings 工作簿 I/O。"
+  skill_updates:
+    should_update_other_skills: true
+    targets:
+      - skill: "finance-excel-logic-python-builder"
+        proposed_rule: "强制 xlwings 工作簿 I/O。"
+      - skill: "sap-pyautogui-download-builder"
+        proposed_rule: "强制 xlwings 处理 SAP 上下游工作簿。"
+      - skill: "oa-drissionpage-download-builder"
+        proposed_rule: "强制 xlwings 处理配置、合并和结果工作簿。"
+  tags:
+    - "excel"
+    - "xlwings"
+    - "company-rpa"
+    - "policy"
+```
+
 ## pybug-20260607-editable-table-filter-cache-misses-unsaved-values
 
 ```yaml

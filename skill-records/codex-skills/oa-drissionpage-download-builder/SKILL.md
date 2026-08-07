@@ -48,6 +48,7 @@ When matching the current company OA style, prefer these patterns:
 - Use longer polling windows for slow reports.
 - Use `click.to_download(origin_dir)` and `mission.wait(show=False)` when following DrissionPage download style.
 - Merge downloaded Excel files with `xlwings` when the business expects a final workbook with multiple sheets.
+- Use `xlwings` for every direct read, creation, modification, merge, or save of company Excel workbooks. Use pandas only for in-memory DataFrame processing; unless the user explicitly approves an exception, do not use `pandas.read_excel()`, `DataFrame.to_excel()`, `ExcelWriter`, `openpyxl`, or `xlsxwriter` for business-workbook I/O.
 - Use filename prefixes to assign output sheet names only after confirming the prefixes.
 - Add timestamps to final output files when the source pattern does so.
 
