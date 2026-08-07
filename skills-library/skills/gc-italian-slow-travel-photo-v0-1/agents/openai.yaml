@@ -1,0 +1,4 @@
+interface:
+  display_name: "Italian Slow Travel Photo"
+  short_description: "Natural, film-like slow-travel photo editing"
+  default_prompt: "Use $gc-italian-slow-travel-photo-v0-1 to edit this travel photo with natural light, restrained warmth, and documentary composition."
